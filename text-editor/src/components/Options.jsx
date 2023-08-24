@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBold, faItalic, faFont } from '@fortawesome/free-solid-svg-icons';
+import { faBold, faItalic, faEraser,faUndo,faRedo } from '@fortawesome/free-solid-svg-icons';
 
 class Options extends Component {
     constructor(props) {
@@ -11,7 +11,9 @@ class Options extends Component {
             isItalic: false,
             selectedFontSize: '12px',
             isUppercase: false,
-            selectedColor: 'black' 
+            selectedColor: 'black' ,
+            history: [],
+            historyIndex: -1
         };
     }
 
@@ -19,45 +21,116 @@ class Options extends Component {
         const selectedFont = event.target.value;
         this.setState({ selectedFont });
         this.applyStyleToTextArea('font-family', selectedFont);
+        this.saveToHistory();
     };
 
     handleBoldText = () => {
         this.setState((prevState) => ({ isBold: !prevState.isBold }));
         this.applyStyleToTextArea('font-weight', this.state.isBold ? 'normal' : 'bold');
+        this.saveToHistory();
     };
 
     handleItalicText = () => {
         this.setState((prevState) => ({ isItalic: !prevState.isItalic }));
         this.applyStyleToTextArea('font-style', this.state.isItalic ? 'normal' : 'italic');
+        this.saveToHistory();
     };
 
     handleFontSizeChange = (event) => {
         const selectedFontSize = event.target.value;
         this.setState({ selectedFontSize });
         this.applyStyleToTextArea('font-size', selectedFontSize);
+        this.saveToHistory();
     };
 
     handleFontCase = () => {
         this.setState((prevState) => ({ isUppercase: !prevState.isUppercase }), () => {
             this.applyFontCase();
         });
+        this.saveToHistory();
+
     };
 
     handleColorChange = (event) => {
         const selectedColor = event.target.value;
         this.setState({ selectedColor });
         this.applyStyleToSelection('color', selectedColor);
+        this.saveToHistory();
+    };
+
+    handleClearAll = () => {
+        const textArea = document.querySelector('.text-input');
+        textArea.textContent = '';
+        this.saveToHistory();
+    };
+
+    handleUndo = () => {
+        const { history, historyIndex } = this.state;
+    
+        if (historyIndex >= 0) {
+            const prevHistoryIndex = historyIndex - 1;
+            const prevState = history[prevHistoryIndex];
+            const textArea = document.querySelector('.text-input');
+            textArea.innerHTML = prevState.content;
+    
+            for (const style in prevState.styles) {
+                textArea.style[style] = prevState.styles[style];
+            }
+    
+            this.setState({ historyIndex: prevHistoryIndex });
+        }
+    };
+    
+    handleRedo = () => {
+        const { history, historyIndex } = this.state;
+    
+        if (historyIndex < history.length - 1) {
+            const nextHistoryIndex = historyIndex + 1;
+            const nextState = history[nextHistoryIndex];
+            const textArea = document.querySelector('.text-input');
+            textArea.innerHTML = nextState.content;
+    
+            for (const style in nextState.styles) {
+                textArea.style[style] = nextState.styles[style];
+            }
+            this.setState({ historyIndex: nextHistoryIndex });
+        }
+    };
+    
+
+    saveToHistory = () => {
+        const textArea = document.querySelector('.text-input');
+        const content = textArea.innerHTML;
+        const styles = {
+            fontFamily: textArea.style['font-family'],
+            fontWeight: textArea.style['font-weight'],
+            fontStyle: textArea.style['font-style'],
+            fontSize: textArea.style['font-size'],
+            color: textArea.style['color'],
+        };
+    
+        const { history, historyIndex } = this.state;
+    
+        // Truncate history after the current index
+        const newHistory = history.slice(0, historyIndex + 1);
+    
+        this.setState({
+            history: [...newHistory, { content, styles }],
+            historyIndex: historyIndex + 1
+        });
     };
 
     applyStyleToTextArea = (style, value) => {
         const textArea = document.querySelector('.text-input');
         textArea.style[style] = value;
+        this.saveToHistory();
     };
 
     applyFontCase = () => {
         const textArea = document.querySelector('.text-input');
         const content = textArea.textContent;
         textArea.textContent = this.state.isUppercase ? content.toUpperCase() : content.toLowerCase();
+        this.saveToHistory();
     };
 
     applyStyleToSelection = (style, value) => {
@@ -75,10 +148,11 @@ class Options extends Component {
     
             selection.removeAllRanges();
         }
+        this.saveToHistory();
     };
 
     render() {
-        const { selectedFont, isBold, isItalic, selectedFontSize, isUppercase, selectedColor } = this.state;
+        const {  isBold, isItalic, isUppercase, selectedColor } = this.state;
 
         return (
             <div className="options">
@@ -110,6 +184,15 @@ class Options extends Component {
                     value={selectedColor}
                     onChange={this.handleColorChange}
                 />
+                <button className="options-button" onClick={this.handleClearAll}>
+                    <FontAwesomeIcon icon={faEraser} />
+                </button>
+                <button className="options-button" onClick={this.handleUndo}>
+                    <FontAwesomeIcon icon={faUndo} />
+                </button>
+                <button className="options-button" onClick={this.handleRedo}>
+                    <FontAwesomeIcon icon={faRedo} />
+                </button>
 
             </div>
         );
