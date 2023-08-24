@@ -1,0 +1,116 @@
+.text-input{
+  width: 97%; /* 95% de la largeur de main-container */
+  height: 40%; /* 40% de la hauteur de main-container */
+  background-color: white;
+  padding: 10px;
+  overflow: auto; /* Si le contenu déborde, ajoute une barre de défilement */
+  border-radius: 10px; /* Ajoute des angles arrondis */
+  margin-bottom: 15px;
+  margin-top: 5px;
+}
+
+
+.options {
+display: flex;
+align-items: center;
+padding: 10px;
+}
+
+.options-select, .options-button {
+margin-right: 10px; /* Espace entre les boutons/options */
+background-color: transparent;
+border: 1px solid white;
+color: white;
+padding: 5px;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+font-size: 14px;
+width: 32px;
+height: 32px;
+border-radius: 5px;
+}
+
+.options-select {
+padding: 0;
+width: 100px;
+height: 32px;
+color: rgb(255, 255, 255);
+}
+
+.options-select option{
+   color: black;
+}
+
+.options-button i {
+font-size: 16px;
+color: white;
+}
+
+/* Add these styles to your existing CSS file or styles */
+.rounded-color-input {
+    /* Ensure the input is fully round */
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    background: none;
+    border: solid 1px white ;
+    outline: none;
+    cursor: pointer;
+    appearance: none; /* For browser compatibility */
+
+    /* Remove the default arrow button (Webkit browsers) */
+    -webkit-appearance: none;
+}
+
+/* Style the color input to match your design */
+.rounded-color-input::-webkit-color-swatch-wrapper {
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    box-shadow: none;
+}
+
+.rounded-color-input::-webkit-color-swatch {
+    border: none;
+    border-radius: 50%;
+    box-shadow: none;
+}
+
+.virtual-keyboard{
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centrer les rangées verticalement */
+  align-items: center; /* Centrer les rangées horizontalement */
+}
+
+.keyboard-row {
+display: flex;
+}
+
+.keyboard-key {
+display: flex;
+justify-content: center;
+align-items: center;
+width: 60px; /* Vous pouvez ajuster la taille des touches */
+height: 40px; /* Même taille que la largeur pour des touches carrées */
+margin: 5px; /* Espace entre les touches */
+border: 1px solid white;
+border-radius: 5px; /* Angles arrondis */
+background-color: transparent;
+color: white;
+cursor: pointer;
+font-size: 16px;
+}
+
+.large-space {
+    width: 600px; /* Ajustez la largeur de la barre d'espace comme vous le souhaitez */
+    height: 40px; /* Hauteur similaire aux autres touches */
+    margin: 5px; /* Espace entre la barre d'espace et les autres touches */
+    border: 1px solid white;
+    border-radius: 5px; /* Angles arrondis */
+    background-color: transparent;
+    cursor: pointer;
+}
