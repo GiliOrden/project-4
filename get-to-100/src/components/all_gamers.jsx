@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import Gamer from "./gamer";
 import "./allGamers.css";
+
 class AllGamers extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       idsOfGamers: 0,
-      gamers: [],
+      gamers: this.props.gamers,
       currentGamer: 0,
     };
     this.addGamer = this.addGamer.bind(this);
@@ -24,6 +25,7 @@ class AllGamers extends Component {
           name: newName,
           enabled: "No",
           goNext: true,
+          score: 0,
         },
       ],
     });
@@ -41,7 +43,7 @@ class AllGamers extends Component {
     const leftSideOfArray = gamers.slice(0, i);
 
     const rightSideOfArray = gamers.slice(i + 1, gamers.length);
-    console.log(gamers[i].enabled);
+
     let yesOrNo = gamers[i].enabled == "No" ? "Yes" : "No";
 
     let gamer = { ...gamers[i], enabled: yesOrNo };
@@ -68,21 +70,15 @@ class AllGamers extends Component {
     const leftSideOfArray = gamers.slice(0, i);
 
     const rightSideOfArray = gamers.slice(i + 1, gamers.length);
-    console.log(gamers[i].enabled);
+
     let trueOrFalse = gamers[i].goNext ? false : true;
 
     let gamer = { ...gamers[i], goNext: trueOrFalse };
-    console.log(leftSideOfArray, rightSideOfArray, gamer);
     gamers = [...leftSideOfArray, gamer, ...rightSideOfArray];
-    console.log(gamers);
-    this.setState(
-      {
-        gamers: gamers,
-      },
-      () => {
-        console.log(this.state.gamers);
-      }
-    );
+
+    this.setState({
+      gamers: gamers,
+    });
   };
 
   deleteGamer = () => {
@@ -94,13 +90,11 @@ class AllGamers extends Component {
     const rightSideOfArray = gamers.slice(i + 1, gamers.length);
 
     gamers = [...leftSideOfArray, ...rightSideOfArray];
-    console.log(gamers);
     this.setState(
       {
         gamers: gamers,
       },
       () => {
-        console.log(this.state.gamers);
         //there is gamers who still play in the game
         if (this.state.gamers.length) {
           let next = i > this.state.gamers.length - 1 ? 0 : i;
@@ -127,12 +121,15 @@ class AllGamers extends Component {
           {this.state.gamers.map((gamer) => (
             <Gamer
               key={gamer.id}
+              id={gamer.id} // Pass the id of the gamer
               enabled={gamer.enabled}
               name={gamer.name}
               goNext={gamer.goNext}
               changeEnabled={this.changeEnabled}
               gamerStartNewGame={this.gamerStartNewGame}
               deleteGamer={this.deleteGamer}
+              gamers={this.state.gamers}
+              updateGamers={this.props.updateGamers}
             />
           ))}
         </ul>

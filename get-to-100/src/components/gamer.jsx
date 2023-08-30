@@ -17,6 +17,8 @@ class Gamer extends Component {
       newGame: "No",
       startNewGame: "dont",
       goNext: props.goNext,
+      score: 0,
+      gamers: this.props.gamers,
     };
     this.quit = this.quit.bind(this);
     this.changeEnabledInFather = this.changeEnabledInFather.bind(this);
@@ -63,10 +65,34 @@ class Gamer extends Component {
   gotThe100 = () => {
     //when getting the 100 number
     if (this.state.currentNum == 100) {
-      var score = this.state.scores == "-" ? "" : this.state.scores + ", ";
+      var score = this.state.scores === "-" ? "" : this.state.scores + ", ";
 
-      this.setState({ scores: score + this.state.steps });
+      // console.log(this.props.gamers);
+      const updatedGamers = this.props.gamers.map((gamer) => {
+        if (gamer.id === this.props.id) {
+          return {
+            ...gamer,
+            score: gamer.score + 1,
+          };
+        }
+
+        return gamer;
+      });
+      console.log(this.state.score);
+      this.setState(
+        (prevState) => ({
+          scores: score + prevState.steps,
+          score: prevState.score + 1,
+          gamers: updatedGamers,
+        }),
+        () => {
+          console.log(this.state.score);
+          this.props.updateGamers(updatedGamers);
+        }
+      );
+
       //the buttons of start new game/ quit will show up
+
       this.setState({ newGame: "Yes" });
 
       this.startNewGameUpdateButtons();
